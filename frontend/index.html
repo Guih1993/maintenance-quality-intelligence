@@ -1,0 +1,1969 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maintenance Quality Intelligence</title>
+  <style>
+    :root {
+      --bg: #f3f6fa;
+      --surface: #ffffff;
+      --navy: #10243d;
+      --blue: #1764ad;
+      --line: #e3e9f1;
+      --muted: #69798e;
+      --text: #26374b;
+      --green: #11836a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 14px "Segoe UI", Arial, sans-serif;
+    }
+
+    header {
+      padding: 23px 36px;
+      background: var(--navy);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand { font-size: 21px; font-weight: 700; }
+    .subtitle { opacity: .72; margin-top: 5px; font-size: 12px; }
+    .status { font-size: 12px; color: #a5e8d2; }
+
+    main { max-width: 1440px; margin: auto; padding: 30px; }
+
+    h1 { font-size: 23px; margin: 0 0 6px; }
+    h2 { font-size: 16px; margin: 0 0 20px; }
+    p { line-height: 1.55; }
+
+    .muted { color: var(--muted); }
+    .section-title { margin-bottom: 24px; }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: 0 2px 9px #142c4606;
+    }
+
+    .kpi-label { color: var(--muted); font-size: 13px; }
+    .kpi-value {
+      margin-top: 13px;
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .kpi-detail { font-size: 11px; color: var(--muted); margin-top: 7px; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .metric { margin-bottom: 17px; }
+    .metric-head {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      gap: 10px;
+    }
+
+    .bar {
+      height: 10px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #e9eff6;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--blue);
+      border-radius: 12px;
+      transition: width .35s;
+    }
+
+    .info-row { margin-bottom: 14px; }
+    .info-row strong { display: block; margin-bottom: 5px; }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    input, button {
+      font: inherit;
+      border-radius: 8px;
+      padding: 11px 14px;
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid var(--line);
+      background: white;
+      outline-color: var(--blue);
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+      background: var(--blue);
+      color: white;
+      font-weight: 600;
+    }
+
+    button:hover { filter: brightness(.93); }
+    button:disabled { opacity: .5; cursor: wait; }
+
+    .table-wrap { overflow-x: auto; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 13px;
+      background: #f8fafc;
+    }
+    td {
+      padding: 14px 13px;
+      border-top: 1px solid var(--line);
+    }
+    tbody tr { cursor: pointer; }
+    tbody tr:hover { background: #f3f8fe; }
+
+    .score {
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .pill {
+      padding: 5px 9px;
+      background: #eaf4ff;
+      color: #155999;
+      border-radius: 14px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #101b2bb8;
+      z-index: 10;
+      padding: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .overlay.active { display: flex; }
+
+    .modal {
+      background: white;
+      width: min(920px, 100%);
+      max-height: 94vh;
+      overflow-y: auto;
+      border-radius: 14px;
+      padding: 28px;
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      right: 20px;
+      top: 18px;
+      background: #edf1f6;
+      color: var(--text);
+    }
+
+    .relato {
+      background: #f1f5fa;
+      padding: 18px;
+      border-radius: 9px;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      margin-bottom: 22px;
+    }
+
+    .criterion {
+      border-bottom: 1px solid var(--line);
+      padding: 15px 0;
+    }
+
+    .criterion-title {
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .criterion p { color: var(--muted); margin: 9px 0 0; }
+    .error { color: #b33232; }
+
+    @media(max-width: 850px) {
+      header { padding: 20px; }
+      main { padding: 18px; }
+      .kpis { grid-template-columns: repeat(2, 1fr); }
+      .layout { grid-template-columns: 1fr; }
+      .toolbar { flex-wrap: wrap; }
+      .modal { padding: 20px; }
+    }
+
+    @media(max-width: 480px) {
+      .kpis { grid-template-columns: 1fr; }
+    }
+
+/* PROCESSAMENTO DE OS */
+
+.processamento-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.processamento-header h2 {
+  margin-bottom: 6px;
+}
+
+.processamento-header p {
+  margin: 0;
+}
+
+.processamento-header button {
+  flex-shrink: 0;
+}
+
+.processamento-progresso {
+  padding: 18px;
+  background: #f5f8fc;
+  border-radius: 10px;
+  margin-bottom: 18px;
+}
+
+.processamento-progresso p {
+  margin-bottom: 0;
+  font-size: 12px;
+}
+
+.processamento-indicadores {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.processamento-indicadores > div {
+  padding: 14px;
+  background: #f5f8fc;
+  border-radius: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.processamento-indicadores strong {
+  font-size: 19px;
+  color: var(--navy);
+}
+
+@media (max-width: 750px) {
+  .processamento-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .processamento-indicadores {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* NAVEGACAO POR ABAS */
+
+.navegacao-abas {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+
+.navegacao-abas button {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+
+.navegacao-abas button.ativa {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+
+.painel-aba { display: none; }
+.painel-aba.ativa { display: block; }
+
+.filtros-periodo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.filtros-periodo label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.filtros-periodo input {
+  min-width: 150px;
+}
+
+.grafico-linha {
+  width: 100%;
+  height: 360px;
+  display: block;
+}
+
+.paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.paginacao button {
+  padding: 8px 12px;
+}
+
+.paginacao button:disabled {
+  opacity: .4;
+}
+
+.nota-pendente {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.celula-descricao {
+  min-width: 280px;
+  max-width: 500px;
+  white-space: normal;
+  line-height: 1.5;
+}
+
+@media (max-width: 650px) {
+  .navegacao-abas button {
+    flex: 1 1 45%;
+  }
+}
+
+
+
+.section-title { position: relative; padding-right: 52px; }
+.info-botao { position: absolute; top: 0; right: 0; border-radius: 50%; width: 38px; height: 38px; padding: 0; font: italic bold 24px Georgia, serif; background: #e5effb; color: var(--blue); border: 1px solid #c9ddf4; }
+.ajuda-dialog { border: 1px solid var(--line); border-radius: 16px; width: min(650px, 94vw); max-height: 90vh; padding: 22px; color: var(--text); }
+.ajuda-dialog::backdrop { background: #10243daa; }
+.ajuda-dialog .card { border: 0; box-shadow: none; padding: 8px; clear: both; }
+.fechar-ajuda { float: right; margin-bottom: 15px; background: #edf1f6; color: var(--text); }
+.ranking-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.ranking-grid h3 { font-size: 13px; margin: 0 0 16px; }
+.ranking-nota { font-size: 12px; margin-top: -8px; }
+.ranking-item { margin-bottom: 16px; font-size: 12px; }
+.ranking-item .metric-head span { overflow-wrap: anywhere; }
+.ranking-item strong { white-space: nowrap; }
+.ranking-item small { display: block; margin-top: 5px; }
+.ranking-item .bar { height: 6px; }
+.ranking-item.baixo .bar-fill { background: #cc8743; }
+.ranking-item.alto .bar-fill { background: var(--green); }
+.periodo-kpi { background: #f3f7fc; border: 1px solid var(--line); border-top: 3px solid var(--blue); border-radius: 12px; padding: 18px; }
+.ordenar-coluna { background: transparent; color: var(--muted); padding: 0; text-align: left; font: inherit; font-weight: 600; }
+.ordenar-coluna span { color: var(--blue); white-space: nowrap; }
+.filtros-periodo select { border: 1px solid var(--line); border-radius: 8px; background: white; padding: 11px 14px; font: inherit; color: var(--text); }
+@media(max-width: 600px) { .ranking-grid { grid-template-columns: 1fr; } }
+  .processamento-acoes { display: flex; gap: 12px; }
+  #btn-parar { background: #a63a3a; }
+  .kpis-geral { grid-template-columns: repeat(5,minmax(0,1fr)); }
+  .legenda-evolucao { display:flex; flex-wrap:wrap; gap:12px; margin-top:12px; font-size:12px; }
+  #tecnicosEvolucao { min-width:240px; max-width:100%; }
+  @media(max-width:1000px){.kpis-geral{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media(max-width:480px){.kpis-geral{grid-template-columns:1fr;}}
+  .nome-tecnico { background:transparent; color:var(--blue); padding:0; font:inherit; text-align:left; text-decoration:underline; cursor:pointer; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div>
+      <div class="brand">Maintenance Quality Intelligence</div>
+      <div class="subtitle">Inteligência de qualidade documental da manutenção</div>
+    </div>
+    <div class="status" id="status">● Conectando...</div>
+  </header>
+
+  <main>
+    <div class="section-title">
+      <h1>Visão geral da qualidade documental</h1>
+      <div class="muted">Avaliação automatizada de ordens de serviço com Qwen3</div>
+    </div>
+
+    <form id="filtroGeral" class="filtros-periodo" style="margin-bottom:20px">
+      <label>Data inicial <input type="date" id="inicioGeral"></label>
+      <label>Data final <input type="date" id="fimGeral"></label>
+      <button type="submit">Consultar período</button>
+      <button type="button" id="limparPeriodoGeral">Todo o histórico</button>
+      <span class="muted">Filtro pela data de criação da OS.</span>
+    </form>
+    <section class="kpis kpis-geral">
+<div class="card">
+        <div class="kpi-label">Ordens importadas</div>
+        <div class="kpi-value" id="totalOs">—</div>
+        <div class="kpi-detail">Base histórica no SQLite</div>
+      </div>
+<div class="card">
+        <div class="kpi-label">Ordens avaliadas</div>
+        <div class="kpi-value" id="avaliadas">—</div>
+        <div class="kpi-detail">OS distintas com avaliação</div>
+      </div>
+<div class="card">
+        <div class="kpi-label">Cobertura da avaliação</div>
+        <div class="kpi-value" id="cobertura">—</div>
+        <div class="kpi-detail">Percentual sobre as OS importadas</div>
+      </div>
+<div class="card">
+        <div class="kpi-label">Score médio</div>
+        <div class="kpi-value" id="scoreMedio">—</div>
+        <div class="kpi-detail">Qualidade documental, escala 0–100</div>
+      </div>
+<div class="card"><div class="kpi-label">Taxa de Encerramento %</div>
+        <div class="kpi-value" id="taxaEncerramento">-</div>
+        <div class="kpi-detail" id="ordensAbertas">-</div></div>
+    </section>
+
+    <section class="layout">
+      <div class="card">
+        <h2>Desempenho por critério</h2>
+        <div id="criterios"></div>
+        <div class="muted" style="font-size:12px">
+          Notas médias das seis rubricas, escala 0–2.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Como funciona a avaliação</h2>
+        <div class="info-row">
+          <strong>01 — Identificação do componente</strong>
+          <span class="muted">Qual equipamento ou componente foi documentado?</span>
+        </div>
+        <div class="info-row">
+          <strong>02 — Anomalia</strong>
+          <span class="muted">A falha ou condição anormal foi descrita?</span>
+        </div>
+        <div class="info-row">
+          <strong>03 — Causa e evidência</strong>
+          <span class="muted">Há fundamentação técnica no diagnóstico?</span>
+        </div>
+        <div class="info-row">
+          <strong>04 — Intervenção</strong>
+          <span class="muted">A ação executada foi documentada?</span>
+        </div>
+        <div class="info-row">
+          <strong>05 — Teste</strong>
+          <span class="muted">Há validação documentada após a intervenção?</span>
+        </div>
+        <div class="info-row">
+          <strong>06 — Clareza</strong>
+          <span class="muted">O relato é compreensível e coerente?</span>
+        </div>
+      </div>
+    </section>
+
+<!-- PROCESSAMENTO DE NOVAS OS -->
+<section class="card" id="painel-processamento"
+         style="margin-bottom:22px">
+
+  <div class="processamento-header">
+    <div>
+      <h2>Processamento de novas ordens de serviço</h2>
+      <p class="muted">
+        Execute avaliações locais utilizando o Qwen3.
+        As ordens já avaliadas serão ignoradas.
+      </p>
+    </div>
+
+    <div class="processamento-acoes">
+      <button id="btn-processar" type="button">Iniciar</button>
+      <button id="btn-parar" type="button" disabled>Parar</button>
+    </div>
+  </div>
+
+  <div class="processamento-progresso">
+    <div class="metric-head">
+      <strong id="proc-situacao">
+        Aguardando processamento
+      </strong>
+      <strong id="proc-percentual">0%</strong>
+    </div>
+
+    <div class="bar">
+      <div class="bar-fill"
+           id="proc-barra"
+           style="width:0%">
+      </div>
+    </div>
+
+    <p class="muted" id="proc-mensagem">
+      Iniciar classifica todas as OS atualmente pendentes. Parar conclui e salva a OS em andamento antes de encerrar.
+    </p>
+  </div>
+
+  <div class="processamento-indicadores">
+    <div>
+      <span class="muted">Processadas</span>
+      <strong id="proc-processadas">0 / 0</strong>
+    </div>
+
+    <div>
+      <span class="muted">Gravadas</span>
+      <strong id="proc-gravadas">0</strong>
+    </div>
+
+    <div>
+      <span class="muted">Erros</span>
+      <strong id="proc-erros">0</strong>
+    </div>
+
+    <div>
+      <span class="muted">Última OS</span>
+      <strong id="proc-ultima-os">—</strong>
+    </div>
+  </div>
+
+  <div id="proc-erro"
+       class="error"
+       style="margin-top:12px"
+       role="alert">
+  </div>
+</section>
+
+
+    <section class="card">
+      <h2>Ordens de serviço avaliadas</h2>
+
+      <div class="toolbar">
+        <input
+          id="busca"
+          placeholder="Pesquisar número da OS ou equipamento..."
+          aria-label="Pesquisar ordens de serviço"
+        >
+        <button id="pesquisar">Pesquisar</button>
+        <button id="atualizar">Atualizar</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>OS</th>
+              <th>Tipo</th>
+              <th>Equipamento</th>
+              <th>Score</th>
+              <th>Data da avaliação</th>
+            </tr>
+          </thead>
+          <tbody id="tabela">
+            <tr><td colspan="5">Carregando avaliações...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="muted" id="quantidadeLista"></p>
+    </section>
+  </main>
+
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <button class="close" id="fechar" aria-label="Fechar">✕</button>
+      <div id="detalhe"></div>
+    </div>
+  </div>
+
+  <script>
+    const API = "/api";
+
+    const nomes = {
+      c01_componente: "C01 — Componente",
+      c02_anomalia: "C02 — Anomalia",
+      c03_causa_evidencia: "C03 — Causa e evidência",
+      c04_intervencao: "C04 — Intervenção",
+      c05_teste: "C05 — Teste",
+      c06_clareza: "C06 — Clareza"
+    };
+
+    const formato = new Intl.NumberFormat("pt-BR", {
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2
+    });
+
+    const numero = n => Number(n || 0).toLocaleString("pt-BR");
+    const percentual = n => formato.format(n || 0) + "%";
+
+    function elemento(tag, texto, classe) {
+      const el = document.createElement(tag);
+      if (texto !== undefined) el.textContent = String(texto);
+      if (classe) el.className = classe;
+      return el;
+    }
+
+    async function obterJSON(url) {
+      const resposta = await fetch(url, { cache: "no-store" });
+      if (!resposta.ok) {
+        throw new Error("Erro HTTP " + resposta.status);
+      }
+      return resposta.json();
+    }
+
+    let periodoGeral = new URLSearchParams();
+    function parametrosGeral() { return periodoGeral.toString(); }
+    document.getElementById("filtroGeral").addEventListener("submit", async e => {
+      e.preventDefault();
+      const inicio = document.getElementById("inicioGeral").value;
+      const fim = document.getElementById("fimGeral").value;
+      const campo = document.getElementById("fimGeral");
+      campo.setCustomValidity(inicio && fim && inicio > fim ? "A data final deve ser igual ou posterior à inicial." : "");
+      if (!campo.reportValidity()) return;
+      periodoGeral = new URLSearchParams();
+      if(inicio) periodoGeral.set("inicio",inicio);
+      if(fim) periodoGeral.set("fim",fim);
+      window.dispatchEvent(new Event("periodo-geral"));
+      try { await Promise.all([carregarResumo(),carregarAvaliacoes()]); }
+      catch(e) { document.getElementById("status").textContent = "Erro: " + e.message; }
+    });
+    document.getElementById("fimGeral").addEventListener("input", e => e.target.setCustomValidity(""));
+    document.getElementById("inicioGeral").addEventListener("input", () => document.getElementById("fimGeral").setCustomValidity(""));
+    document.getElementById("limparPeriodoGeral").addEventListener("click", () => {
+      document.getElementById("inicioGeral").value = "";
+      document.getElementById("fimGeral").value = "";
+      document.getElementById("fimGeral").setCustomValidity("");
+      document.getElementById("filtroGeral").requestSubmit();
+    });
+    async function carregarResumo() {
+      const dados = await obterJSON(API + "/resumo?" + parametrosGeral());
+      document.getElementById("taxaEncerramento").textContent = dados.taxa_encerramento == null ? "—" : percentual(dados.taxa_encerramento);
+      document.getElementById("ordensAbertas").textContent = numero(dados.os_abertas) + " OS em aberto" + (dados.os_termino_desconhecido ? " | " + numero(dados.os_termino_desconhecido) + " sem informa\u00e7\u00e3o" : "");
+
+      document.getElementById("totalOs").textContent =
+        numero(dados.total_os_importadas);
+
+      document.getElementById("avaliadas").textContent =
+        numero(dados.os_avaliadas);
+
+      document.getElementById("scoreMedio").textContent =
+        percentual(dados.score_medio);
+
+      const cobertura = dados.total_os_importadas
+        ? dados.os_avaliadas / dados.total_os_importadas * 100
+        : 0;
+
+      document.getElementById("cobertura").textContent =
+        percentual(cobertura);
+
+      const area = document.getElementById("criterios");
+      area.replaceChildren();
+
+      const chaves = Object.keys(nomes);
+      const siglas = ["C01", "C02", "C03", "C04", "C05", "C06"];
+
+      chaves.forEach((chave, indice) => {
+        const nota = Number(dados.medias_criterios[siglas[indice]] || 0);
+
+        const metric = elemento("div", undefined, "metric");
+        const head = elemento("div", undefined, "metric-head");
+
+        head.append(
+          elemento("span", nomes[chave]),
+          elemento("strong", formato.format(nota) + " / 2")
+        );
+
+        const bar = elemento("div", undefined, "bar");
+        const fill = elemento("div", undefined, "bar-fill");
+
+        fill.style.width =
+          Math.min(100, Math.max(0, nota / 2 * 100)) + "%";
+
+        bar.append(fill);
+        metric.append(head, bar);
+        area.append(metric);
+      });
+
+      document.getElementById("status").textContent =
+        "● API local conectada";
+    }
+
+    async function carregarAvaliacoes() {
+      const busca = document.getElementById("busca").value.trim();
+      const tabela = document.getElementById("tabela");
+
+      tabela.replaceChildren();
+      const carregando = elemento("tr");
+      const celula = elemento("td", "Carregando avaliações...");
+      celula.colSpan = 5;
+      carregando.append(celula);
+      tabela.append(carregando);
+
+      const url = API + "/avaliacoes?limite=5&busca=" +
+        encodeURIComponent(busca) + "&" + parametrosGeral();
+
+      const registros = await obterJSON(url);
+
+      tabela.replaceChildren();
+
+      if (!registros.length) {
+        const tr = elemento("tr");
+        const td = elemento("td", "Nenhuma avaliação encontrada.");
+        td.colSpan = 5;
+        tr.append(td);
+        tabela.append(tr);
+      }
+
+      registros.forEach(registro => {
+        const tr = elemento("tr");
+
+        tr.append(
+          elemento("td", registro.ordem_servico),
+          elemento("td", registro.tipo_manutencao),
+          elemento("td", registro.bem_nome || "Não informado"),
+          elemento("td", percentual(registro.score_0_100), "score"),
+          elemento("td", registro.avaliado_em || "—")
+        );
+
+        tr.addEventListener("click", () =>
+          abrirDetalhe(registro.avaliacao_id)
+        );
+
+        tabela.append(tr);
+      });
+
+      document.getElementById("quantidadeLista").textContent =
+        registros.length + " avaliações exibidas";
+    }
+
+    function adicionarCampo(destino, titulo, valor) {
+      destino.append(
+        elemento("strong", titulo),
+        elemento("p", valor || "Não informado")
+      );
+    }
+
+    async function abrirDetalhe(id) {
+      const overlay = document.getElementById("overlay");
+      const destino = document.getElementById("detalhe");
+
+      overlay.classList.add("active");
+      destino.replaceChildren(
+        elemento("p", "Carregando detalhes...")
+      );
+
+      try {
+        const dados = await obterJSON(API + "/avaliacoes/" + id);
+        const avaliacao = dados.resposta_json || {};
+        const codigoTipo = String(dados.tipo_manutencao || "").trim().toUpperCase();
+        const tiposManutencao = {
+          C01: "Corretivas Emergenciais \u2013 C01",
+          C05: "Corretivas N\u00e3o Planejadas \u2013 C05"
+        };
+        const tipoDescricao = tiposManutencao[codigoTipo] || codigoTipo || "N\u00e3o informado";
+
+        destino.replaceChildren();
+
+        destino.append(
+          elemento("h1", "Ordem de serviço " + dados.ordem_servico),
+          elemento(
+            "p",
+            (dados.bem_nome || "Equipamento não informado") +
+              " | Score " + percentual(dados.score_0_100),
+            "muted"
+          ),
+          elemento("p", "Tipo da OS: " + tipoDescricao, "pill"),
+          elemento("h2", "Relato original")
+        );
+
+        destino.append(
+          elemento("div", dados.observacao_original || "", "relato")
+        );
+
+        const tecnicos = dados.tecnicos || [];
+        adicionarCampo(
+          destino,
+          "Técnicos vinculados à OS",
+          tecnicos.join(" | ") || "Não informados"
+        );
+
+        destino.append(elemento("h2", "Avaliação documental"));
+
+        Object.entries(nomes).forEach(([chave, titulo]) => {
+          const bloco = elemento("div", undefined, "criterion");
+          const cabecalho = elemento("div", undefined, "criterion-title");
+
+          cabecalho.append(
+            elemento("span", titulo),
+            elemento("span", (dados[chave] ?? "—") + " / 2")
+          );
+
+          bloco.append(
+            cabecalho,
+            elemento(
+              "p",
+              avaliacao.justificativas?.[chave] ||
+                "Justificativa não disponível"
+            )
+          );
+
+          destino.append(bloco);
+        });
+
+        destino.append(elemento("h2", "Lacunas identificadas"));
+
+        const lista = elemento("ul");
+        (dados.lacunas_identificadas || []).forEach(lacuna => {
+          lista.append(elemento("li", lacuna));
+        });
+        destino.append(lista);
+
+        destino.append(elemento("h2", "Orientação de treinamento"));
+        destino.append(
+          elemento(
+            "div",
+            dados.orientacao_treinamento || "Não informada",
+            "relato"
+          )
+        );
+
+      } catch (erro) {
+        destino.replaceChildren(
+          elemento("p", "Não foi possível abrir: " + erro.message, "error")
+        );
+      }
+    }
+
+    function fecharDetalhe() {
+      document.getElementById("overlay").classList.remove("active");
+    }
+
+    async function atualizar() {
+      try {
+        await Promise.all([carregarResumo(), carregarAvaliacoes()]);
+      } catch (erro) {
+        document.getElementById("status").textContent =
+          "● Erro ao conectar à API";
+        console.error(erro);
+        alert("Não foi possível carregar os dados: " + erro.message);
+      }
+    }
+
+    document.getElementById("pesquisar")
+      .addEventListener("click", carregarAvaliacoes);
+
+    document.getElementById("atualizar")
+      .addEventListener("click", atualizar);
+
+    document.getElementById("busca")
+      .addEventListener("keydown", event => {
+        if (event.key === "Enter") carregarAvaliacoes();
+      });
+
+    document.getElementById("fechar")
+      .addEventListener("click", fecharDetalhe);
+
+    document.getElementById("overlay")
+      .addEventListener("click", event => {
+        if (event.target.id === "overlay") fecharDetalhe();
+      });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") fecharDetalhe();
+    });
+
+    atualizar();
+  </script>
+
+<script>
+(() => {
+  "use strict";
+
+  const botao = document.getElementById("btn-processar");
+  const botaoParar = document.getElementById("btn-parar");
+  const barra = document.getElementById("proc-barra");
+  const percentual = document.getElementById("proc-percentual");
+  const situacao = document.getElementById("proc-situacao");
+  const mensagem = document.getElementById("proc-mensagem");
+  const processadas = document.getElementById("proc-processadas");
+  const gravadas = document.getElementById("proc-gravadas");
+  const erros = document.getElementById("proc-erros");
+  const ultimaOs = document.getElementById("proc-ultima-os");
+  const erroVisual = document.getElementById("proc-erro");
+
+  const STATUS_URL = "/api/processamento/status";
+  const INICIAR_URL = "/api/processamento/iniciar";
+
+  let timer = null;
+  let ultimaConclusaoAtualizada = null;
+  let consultaEmAndamento = false;
+
+  function mostrarErro(texto) {
+    erroVisual.textContent = texto || "";
+  }
+
+  function renderizarEstado(dados) {
+    const executando = ["executando", "parando"].includes(dados.situacao);
+    botao.disabled = executando;
+    botaoParar.disabled = dados.situacao !== "executando";
+    botao.textContent = "Iniciar";
+    botaoParar.textContent = dados.situacao === "parando" ? "Parando..." : "Parar";
+
+    const progresso = Math.max(
+      0,
+      Math.min(100, Number(dados.percentual || 0))
+    );
+
+    barra.style.width = progresso + "%";
+    percentual.textContent =
+      progresso.toLocaleString("pt-BR") + "%";
+
+    processadas.textContent =
+      `${dados.processadas || 0} / ${dados.total || 0}`;
+
+    gravadas.textContent = dados.gravadas || 0;
+    erros.textContent = dados.erros || 0;
+    ultimaOs.textContent = dados.ultima_os || "—";
+    mensagem.textContent = dados.mensagem || "";
+
+    const nomesSituacoes = {
+      ocioso: "Aguardando processamento",
+      executando: "Qwen3 avaliando ordens",
+      parando: "Finalizando a OS em andamento",
+      parado: "Classifica\u00e7\u00e3o parada",
+      concluido: "Processamento concluído",
+      concluido_com_erros: "Concluído com erros",
+      falha: "Falha no processamento"
+    };
+
+    situacao.textContent =
+      nomesSituacoes[dados.situacao] || dados.situacao;
+
+    if (dados.situacao === "concluido_com_erros") {
+      mostrarErro(
+        `${dados.erros} OS apresentaram erros. ` +
+        "Consulte o terminal do FastAPI para detalhes."
+      );
+    } else if (dados.situacao === "falha") {
+      mostrarErro(dados.mensagem);
+    } else {
+      mostrarErro("");
+    }
+  }
+
+  async function consultarStatus() {
+    if (consultaEmAndamento) return;
+
+    consultaEmAndamento = true;
+
+    try {
+      const resposta = await fetch(
+        STATUS_URL,
+        { cache: "no-store" }
+      );
+
+      if (!resposta.ok) {
+        throw new Error(`HTTP ${resposta.status}`);
+      }
+
+      const dados = await resposta.json();
+
+      renderizarEstado(dados);
+
+      if (["executando", "parando"].includes(dados.situacao)) {
+        iniciarMonitoramento();
+      } else {
+        pararMonitoramento();
+
+        const encerrado = [
+          "concluido",
+          "concluido_com_erros",
+          "parado",
+          "falha"
+        ].includes(dados.situacao);
+
+        if (
+          encerrado &&
+          dados.job_id &&
+          ultimaConclusaoAtualizada !== dados.job_id
+        ) {
+          ultimaConclusaoAtualizada = dados.job_id;
+
+          // Recarrega os indicadores e a tabela.
+          await Promise.all([
+            carregarResumo(),
+            carregarAvaliacoes()
+          ]);
+        }
+      }
+
+    } catch (erro) {
+      mostrarErro(
+        "Não foi possível consultar o processamento: " +
+        erro.message
+      );
+      pararMonitoramento();
+    } finally {
+      consultaEmAndamento = false;
+    }
+  }
+
+  function iniciarMonitoramento() {
+    if (timer !== null) return;
+
+    timer = setInterval(() => {
+      consultarStatus();
+    }, 1500);
+  }
+
+  function pararMonitoramento() {
+    if (timer === null) return;
+
+    clearInterval(timer);
+    timer = null;
+  }
+
+  async function iniciarLote() {
+    if (botao.disabled) return;
+
+    botao.disabled = true;
+    mostrarErro("");
+
+    mensagem.textContent =
+      "Solicitando processamento ao servidor...";
+
+    try {
+      const resposta = await fetch(INICIAR_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      const dados = await resposta.json();
+
+      if (!resposta.ok) {
+        throw new Error(
+          typeof dados.detail === "string"
+            ? dados.detail
+            : `HTTP ${resposta.status}`
+        );
+      }
+
+      // Identifica o novo lote.
+      ultimaConclusaoAtualizada = null;
+
+      await consultarStatus();
+      iniciarMonitoramento();
+
+    } catch (erro) {
+      mostrarErro(
+        "Não foi possível iniciar o lote: " +
+        erro.message
+      );
+      botao.disabled = false;
+      await consultarStatus();
+    }
+  }
+
+  botaoParar.addEventListener("click", async () => {
+    if (botaoParar.disabled) return;
+    botaoParar.disabled = true;
+    try {
+      const resposta = await fetch("/api/processamento/parar", { method: "POST" });
+      if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+      renderizarEstado(await resposta.json());
+      iniciarMonitoramento();
+    } catch (erro) {
+      mostrarErro("Falha ao solicitar parada: " + erro.message);
+      botaoParar.disabled = false;
+    }
+  });
+
+  botao.addEventListener("click", iniciarLote);
+
+  // Recupera o estado quando a página é aberta
+  // ou atualizada durante um processamento.
+  consultarStatus();
+
+  // Consulta novamente ao voltar para a aba.
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) consultarStatus();
+  });
+
+})();
+</script>
+
+<script>
+(() => {
+  "use strict";
+
+  const main = document.querySelector("main");
+
+  const antigoTitulo = main.querySelector(".section-title");
+  const filtroGeral = document.getElementById("filtroGeral");
+  const antigosKpis = main.querySelector(".kpis");
+  const antigasRubricas = main.querySelector(".layout");
+  const antigoProcessamento =
+    document.getElementById("painel-processamento");
+
+  const antigaTabela = document.getElementById("tabela")
+    .closest("section.card");
+
+  const abas = [
+    ["geral", "Visão geral"],
+    ["evolucao", "Evolução do score"],
+    ["periodo", "Ordens por período"],
+    ["tecnicos", "Técnicos"],
+    ["classificar", "Classificar"]
+  ];
+
+  const navegacao = document.createElement("nav");
+  navegacao.className = "navegacao-abas";
+
+  const paineis = {};
+
+  abas.forEach(([id, nome]) => {
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.textContent = nome;
+    botao.dataset.aba = id;
+
+    navegacao.append(botao);
+
+    const painel = document.createElement("div");
+    painel.className = "painel-aba";
+    painel.id = "aba-" + id;
+
+    paineis[id] = painel;
+  });
+
+  main.replaceChildren(navegacao, ...Object.values(paineis));
+
+  // Mantemos os componentes atuais na primeira aba.
+  [
+    antigoTitulo,
+    filtroGeral,
+    antigosKpis,
+    antigasRubricas,
+    antigaTabela
+  ].filter(Boolean).forEach(el => paineis.geral.append(el));
+
+  paineis.classificar.append(antigoProcessamento);
+
+  function ativarAba(id) {
+    document.querySelectorAll(".navegacao-abas button")
+      .forEach(botao => {
+        botao.classList.toggle(
+          "ativa", botao.dataset.aba === id
+        );
+      });
+
+    Object.entries(paineis).forEach(([chave, painel]) => {
+      painel.classList.toggle("ativa", chave === id);
+    });
+
+    if (id === "evolucao") carregarEvolucao();
+    if (id === "periodo") carregarPeriodo();
+    if (id === "tecnicos") carregarTecnicos();
+  }
+
+  navegacao.addEventListener("click", evento => {
+    const id = evento.target.closest("button")?.dataset.aba;
+    if (id) ativarAba(id);
+  });
+
+  // ---------------------------------------------------------
+  // ABA 2 — EVOLUCAO
+  // ---------------------------------------------------------
+
+  
+paineis.evolucao.innerHTML = `
+  <section class="card">
+    <h2>Evolução da qualidade documental</h2>
+
+    <p class="muted">
+      Acompanhe a média acumulada do score no período selecionado, pela data de criação das OS.
+    </p>
+
+    <div class="filtros-periodo">
+      <label>
+        Ano
+        <select id="anoEvolucao"></select>
+      </label>
+
+      <label>
+        Mês
+        <select id="mesEvolucao">
+          <option value="">Ano completo</option>
+          <option value="1">Janeiro</option>
+          <option value="2">Fevereiro</option>
+          <option value="3">Março</option>
+          <option value="4">Abril</option>
+          <option value="5">Maio</option>
+          <option value="6">Junho</option>
+          <option value="7">Julho</option>
+          <option value="8">Agosto</option>
+          <option value="9">Setembro</option>
+          <option value="10">Outubro</option>
+          <option value="11">Novembro</option>
+          <option value="12">Dezembro</option>
+        </select>
+      </label>
+
+      <label>Setor<select id="setorEvolucao"><option value="">Todos os setores</option></select></label>
+      <label>T&#233;cnicos (Ctrl + clique para selecionar v&#225;rios)
+        <select id="tecnicosEvolucao" multiple size="5" aria-label="Técnicos"></select>
+        <span>Sem sele&#231;&#227;o = todos</span>
+      </label>
+      <button id="todosTecnicosEvolucao" type="button">Todos os t&#233;cnicos</button>
+      <button id="btnEvolucao">
+        Consultar evolução
+      </button>
+    </div>
+
+    <div id="graficoEvolucao"></div><div id="legendaEvolucao" class="legenda-evolucao"></div>
+
+    <p id="textoEvolucao" class="muted"></p>
+  </section>
+`;
+
+const seletorAno = document.getElementById("anoEvolucao");
+const anoAtual = new Date().getFullYear();
+
+for (let ano = anoAtual; ano >= 2015; ano--) {
+  const opcao = document.createElement("option");
+  opcao.value = String(ano);
+  opcao.textContent = String(ano);
+  seletorAno.append(opcao);
+}
+
+document.getElementById("btnEvolucao")
+  .addEventListener("click", carregarEvolucao);
+
+
+  let filtrosEvolucaoProntos = false;
+  window.addEventListener("dados-importados", () => { filtrosEvolucaoProntos = false; });
+  let consultaEvolucao = 0;
+  document.getElementById("todosTecnicosEvolucao").addEventListener("click", () => {
+    Array.from(document.getElementById("tecnicosEvolucao").options).forEach(o => o.selected = false);
+    carregarEvolucao();
+  });
+  async function carregarEvolucao() {
+    const requisicao = ++consultaEvolucao;
+    const texto = document.getElementById("textoEvolucao");
+    const grafico = document.getElementById("graficoEvolucao");
+    const legenda = document.getElementById("legendaEvolucao");
+    texto.textContent = "Carregando...";
+    try {
+      if (!filtrosEvolucaoProntos) {
+        const opcoes = await obterJSON("/api/evolucao/filtros");
+        if (requisicao !== consultaEvolucao) return;
+        const tecnicos = document.getElementById("tecnicosEvolucao");
+        tecnicos.replaceChildren();
+        opcoes.tecnicos.forEach(t => tecnicos.append(new Option(t.nome, t.id)));
+        opcoes.setores.forEach(setor => document.getElementById("setorEvolucao").append(new Option(setor, setor)));
+        filtrosEvolucaoProntos = true;
+      }
+      const ano = document.getElementById("anoEvolucao").value;
+      const mes = document.getElementById("mesEvolucao").value;
+      const params = new URLSearchParams({ano, setor: document.getElementById("setorEvolucao").value});
+      if (mes) params.set("mes",mes);
+      const seletor = document.getElementById("tecnicosEvolucao");
+      const selecionados = Array.from(seletor.selectedOptions);
+      if (selecionados.length < seletor.options.length) selecionados.forEach(o => params.append("tecnicos",o.value));
+      const dados = await obterJSON("/api/evolucao?" + params);
+      if (requisicao !== consultaEvolucao) return;
+      grafico.replaceChildren(); legenda.replaceChildren();
+      const series = new Map();
+      dados.forEach(d => {
+        const chave = d.tecnico_id ?? "todos";
+        if (!series.has(chave)) series.set(chave,{nome:d.tecnico,pontos:new Map()});
+        series.get(chave).pontos.set(d.periodo,d);
+      });
+      const quantidade = mes ? new Date(Number(ano),Number(mes),0).getDate() : 12;
+      const periodos = Array.from({length:quantidade},(_,i) => ano + (mes ? "-"+mes.padStart(2,"0") : "") + "-" + String(i+1).padStart(2,"0"));
+      const largura = Math.max(420,grafico.clientWidth), altura = 360;
+      const esquerda = 52, topo = 20, w = largura-85, h = altura-75;
+      const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+      svg.setAttribute("viewBox",`0 0 ${largura} ${altura}`); svg.setAttribute("role","img");
+      svg.setAttribute("aria-label","Evolução do score por período e técnico");
+      svg.style.cssText = "width:100%;display:block;min-height:260px";
+      function desenhar(tag,atributos,conteudo) {
+        const e = document.createElementNS(svg.namespaceURI,tag);
+        Object.entries(atributos).forEach(([k,v])=>e.setAttribute(k,v));
+        if (conteudo !== undefined) e.textContent=conteudo;
+        svg.append(e); return e;
+      }
+      for(let n=0;n<=100;n+=20){
+        const y=topo+h-n*h/100;
+        desenhar("line",{x1:esquerda,x2:esquerda+w,y1:y,y2:y,stroke:"#e3e9f1"});
+        desenhar("text",{x:8,y:y+4,fill:"#69798e","font-size":12},n+"%");
+      }
+      periodos.forEach((p,i)=>{
+        if(i%Math.ceil(quantidade/10)===0 || i===quantidade-1)
+          desenhar("text",{x:esquerda+i*w/(quantidade-1),y:altura-20,"text-anchor":"middle",fill:"#69798e","font-size":12},mes?p.slice(-2):p.slice(5));
+      });
+      let validos=0;
+      [...series.values()].forEach((serie,index)=>{
+        const cor = `hsl(${(210+index*137.508)%360} 62% 40%)`;
+        let trecho=[];
+        const flush=()=>{if(trecho.length) desenhar("polyline",{points:trecho.join(" "),fill:"none",stroke:cor,"stroke-width":2.5});trecho=[];};
+        periodos.forEach((p,i)=>{
+          const d=serie.pontos.get(p);
+          if(!d || d.score_medio===null){flush();return;}
+          validos++;
+          const x=esquerda+i*w/(quantidade-1),y=topo+h-d.score_medio*h/100;
+          trecho.push(`${x},${y}`);
+          const ponto=desenhar("circle",{cx:x,cy:y,r:3.5,fill:cor});
+          const title=document.createElementNS(svg.namespaceURI,"title");
+          title.textContent=`${serie.nome} | ${p} | ${percentual(d.score_medio)} | ${d.os_com_score} OS acumuladas`;ponto.append(title);
+        });flush();
+        const item=document.createElement("span");item.style.color=cor;item.textContent="● "+serie.nome;legenda.append(item);
+      });
+      grafico.append(svg);
+      texto.textContent=validos ? "Média acumulada desde o início do período selecionado, ponderada pelas OS com score válido. Sem novas avaliações, mantém o valor anterior. OS coletivas participam de cada técnico vinculado." : "Não há avaliações com score válido para os filtros selecionados.";
+    } catch(e) {
+      if(requisicao!==consultaEvolucao)return;
+      grafico.replaceChildren();legenda.replaceChildren();texto.textContent="Erro ao consultar evolução: "+e.message;
+    }
+  }
+
+  // ---------------------------------------------------------
+  // ABA 3 — ORDENS POR PERIODO
+  // ---------------------------------------------------------
+
+  paineis.periodo.innerHTML = `
+    <section class="card">
+      <h2>Consulta de ordens de serviço por período</h2>
+      <p class="muted">
+        Inclui ordens avaliadas, pendentes e não aplicáveis.
+      </p>
+
+      <div class="filtros-periodo">
+        <label>
+          Data inicial
+          <input type="date" id="dataInicio">
+        </label>
+
+        <label>
+          Data final
+          <input type="date" id="dataFim">
+        </label>
+
+        <button id="btnOntem">Ontem</button>
+        <button id="btnPeriodo">Consultar</button>
+      </div>
+
+      <div class="kpis kpis-geral" id="indicadoresPeriodo">
+        ${[["total", "OS no período"], ["c01", "Corretivas Emergenciais · C01"], ["c05", "Corretivas Não Planejadas · C05"], ["score_medio", "Score médio do período"]].map(([id, texto]) => `<div class="periodo-kpi"><div class="kpi-label">${texto}</div><div class="kpi-value" id="periodo-${id}">—</div></div>`).join("")}
+        <div class="periodo-kpi"><div class="kpi-label">Taxa de Encerramento %</div><div class="kpi-value" id="periodo-encerramento">-</div><div class="kpi-detail" id="periodo-abertas">-</div></div>
+      </div>
+      <p class="muted">Score calculado sobre OS com avaliação válida no período completo.</p>
+      <p id="resumoPeriodo" class="muted"></p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>OS</th>
+              <th>Descrição</th>
+              <th>Score</th>
+              <th>Técnicos vinculados</th><th>Encerrada</th><th>Incluída por</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaPeriodo"></tbody>
+        </table>
+      </div>
+
+      <div class="paginacao">
+        <button id="paginaAnterior">Anterior</button>
+        <span id="numeroPagina">Página 1</span>
+        <button id="paginaSeguinte">Próxima</button>
+      </div>
+    </section>
+  `;
+
+  let ordemPeriodo = { ordenar: "data_os", direcao: "desc" };
+  let ordemTecnicos = { ordenar: "total_os", direcao: "desc" };
+  let paginaAtual = 1;
+  let totalPeriodo = 0;
+  const tamanhoPagina = 50;
+
+  function dataLocal(data) {
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, "0");
+    const dia = String(data.getDate()).padStart(2, "0");
+    return `${ano}-${mes}-${dia}`;
+  }
+
+  function selecionarOntem() {
+    const ontem = new Date();
+    ontem.setDate(ontem.getDate() - 1);
+
+    document.getElementById("dataInicio").value =
+      dataLocal(ontem);
+
+    document.getElementById("dataFim").value =
+      dataLocal(ontem);
+
+    paginaAtual = 1;
+    carregarPeriodo();
+  }
+
+  async function carregarPeriodo() {
+    const inicio = document.getElementById("dataInicio").value;
+    const fim = document.getElementById("dataFim").value;
+    const tabela = document.getElementById("tabelaPeriodo");
+
+    if (!inicio || !fim) return;
+
+    try {
+      const parametros = new URLSearchParams({
+        inicio,
+        fim,
+        ...ordemPeriodo,
+        limite: String(tamanhoPagina),
+        pagina: String(paginaAtual)
+      });
+
+      const dados = await obterJSON(
+        "/api/ordens-periodo?" + parametros
+      );
+
+      totalPeriodo = dados.total;
+      const resumo = dados.resumo;
+      document.getElementById("periodo-encerramento").textContent = resumo.taxa_encerramento == null ? "-" : percentual(resumo.taxa_encerramento);
+      document.getElementById("periodo-abertas").textContent = numero(resumo.os_abertas) + " OS em aberto" + (resumo.os_termino_desconhecido ? " | " + numero(resumo.os_termino_desconhecido) + " sem informação" : "");
+      ["total", "c01", "c05", "score_medio"].forEach(chave => {
+        document.getElementById("periodo-" + chave).textContent =
+          chave === "score_medio" ? (resumo[chave] === null ? "Sem score" : percentual(resumo[chave])) : numero(resumo[chave]);
+      });
+      tabela.replaceChildren();
+
+      dados.registros.forEach(os => {
+        const tr = document.createElement("tr");
+
+        const colunas = [
+          os.data_os || "—",
+          os.ordem_servico,
+          os.observacao_original ||
+            os.servico_nome || "Sem descrição",
+          os.status_avaliacao === "NAO_APLICAVEL"
+            ? "N/A"
+            : os.score_0_100 === null
+              ? "Pendente"
+              : percentual(os.score_0_100),
+          os.tecnicos || "Não informado",
+          String(os.termino || "").trim().toUpperCase() === "SIM" ? "Sim" : ["NÃO", "NAO"].includes(String(os.termino || "").trim().toUpperCase()) ? "Não" : "Não informado"
+        ];
+
+        colunas.push(os.usuario_inicio || "Não informado");
+
+        colunas.forEach((valor, i) => {
+          const td = document.createElement("td");
+          td.textContent = valor;
+
+          if (i === 2) td.className = "celula-descricao";
+          if (i === 3) td.className = "score";
+
+          tr.append(td);
+        });
+
+        if (os.avaliacao_id !== null) {
+          tr.addEventListener("click", () =>
+            abrirDetalhe(os.avaliacao_id)
+          );
+        }
+
+        tabela.append(tr);
+      });
+
+      document.getElementById("resumoPeriodo").textContent =
+        `${totalPeriodo.toLocaleString("pt-BR")} OS no período.`;
+
+      document.getElementById("numeroPagina").textContent =
+        `Página ${paginaAtual}`;
+
+      document.getElementById("paginaAnterior").disabled =
+        paginaAtual <= 1;
+
+      document.getElementById("paginaSeguinte").disabled =
+        paginaAtual * tamanhoPagina >= totalPeriodo;
+
+    } catch (erro) {
+      document.getElementById("resumoPeriodo").textContent =
+        "Erro na consulta: " + erro.message;
+    }
+  }
+
+  document.getElementById("btnOntem")
+    .addEventListener("click", selecionarOntem);
+
+  document.getElementById("btnPeriodo")
+    .addEventListener("click", () => {
+      paginaAtual = 1;
+      carregarPeriodo();
+    });
+
+  document.getElementById("paginaAnterior")
+    .addEventListener("click", () => {
+      if (paginaAtual > 1) {
+        paginaAtual--;
+        carregarPeriodo();
+      }
+    });
+
+  document.getElementById("paginaSeguinte")
+    .addEventListener("click", () => {
+      if (paginaAtual * tamanhoPagina < totalPeriodo) {
+        paginaAtual++;
+        carregarPeriodo();
+      }
+    });
+
+  // Define ontem como período inicial, sem consultar ainda.
+  const ontem = new Date();
+  ontem.setDate(ontem.getDate() - 1);
+
+  document.getElementById("dataInicio").value = dataLocal(ontem);
+  document.getElementById("dataFim").value = dataLocal(ontem);
+
+  // ---------------------------------------------------------
+  // ABA 4 — TECNICOS
+  // ---------------------------------------------------------
+
+  paineis.tecnicos.innerHTML = `
+    <section class="card">
+      <h2>Indicadores documentais por técnico</h2>
+
+      <p class="muted">
+        As notas representam as OS vinculadas ao técnico.
+        Uma ordem coletiva pode estar associada a mais
+        de um profissional.
+      </p>
+
+      <div class="toolbar">
+        <input id="buscaTecnico"
+               placeholder="Pesquisar técnico...">
+
+        <button id="btnBuscaTecnico">Pesquisar</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Técnico</th>
+              <th>Total de OS</th>
+              <th>OS avaliadas</th>
+              <th>Cobertura</th>
+              <th>Score médio</th><th>Taxa de Encerramento %</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaTecnicos"></tbody>
+        </table>
+      </div>
+
+      <p class="muted" id="resumoTecnicos"></p>
+    </section>
+  `;
+
+
+  const dialogTecnico = document.createElement("dialog");
+  dialogTecnico.className = "ajuda-dialog";
+  dialogTecnico.setAttribute("aria-labelledby", "titulo-criterios-tecnico");
+  dialogTecnico.innerHTML = `<button type="button" class="fechar-ajuda">Fechar</button><section class="card"><h2 id="titulo-criterios-tecnico">Desempenho por critério</h2><p id="nome-criterios-tecnico"></p><p class="muted">Todo o histórico do técnico. Médias das avaliações atuais com score válido; OS coletivas participam de cada técnico vinculado.</p><div id="conteudo-criterios-tecnico" aria-live="polite"></div></section>`;
+  document.body.append(dialogTecnico);
+  dialogTecnico.querySelector("button").addEventListener("click", () => dialogTecnico.close());
+  dialogTecnico.addEventListener("click", e => {
+    if (e.target !== dialogTecnico) return;
+    const r = dialogTecnico.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dialogTecnico.close();
+  });
+  let consultaCriteriosTecnico = 0;
+  dialogTecnico.addEventListener("close", () => { consultaCriteriosTecnico++; });
+  async function abrirCriteriosTecnico(tecnico) {
+    const consulta = ++consultaCriteriosTecnico;
+    const alvo = document.getElementById("conteudo-criterios-tecnico");
+    document.getElementById("nome-criterios-tecnico").textContent = tecnico.tecnico;
+    alvo.textContent = "Carregando...";
+    if (!dialogTecnico.open) dialogTecnico.showModal();
+    try {
+      const dados = await obterJSON(`/api/tecnicos/${tecnico.tecnico_id}/criterios`);
+      if (consulta !== consultaCriteriosTecnico || !dialogTecnico.open) return;
+      alvo.replaceChildren();
+      alvo.append(elemento("p", `${numero(dados.os_com_score)} OS com score válido de ${numero(dados.total_os)} OS vinculadas.`, "muted"));
+      if (!dados.os_com_score) {
+        alvo.append(elemento("p", "Sem avaliações com score válido para este técnico."));
+        return;
+      }
+      Object.entries(nomes).forEach(([chave, nome]) => {
+        const nota = dados.medias_criterios[chave];
+        const metric = elemento("div", undefined, "metric");
+        const head = elemento("div", undefined, "metric-head");
+        head.append(elemento("span", nome), elemento("strong", nota == null ? "Sem dados" : formato.format(nota) + " / 2"));
+        const bar = elemento("div", undefined, "bar");
+        const fill = elemento("div", undefined, "bar-fill");
+        fill.style.width = Math.min(100, Math.max(0, Number(nota) / 2 * 100)) + "%";
+        bar.append(fill); metric.append(head, bar); alvo.append(metric);
+      });
+    } catch(e) {
+      if (consulta === consultaCriteriosTecnico && dialogTecnico.open) alvo.textContent = "Erro ao consultar: " + e.message;
+    }
+  }
+
+  async function carregarTecnicos() {
+    const busca = document.getElementById("buscaTecnico")
+      .value.trim();
+
+    try {
+      const dados = await obterJSON(
+        "/api/tecnicos-indicadores?limite=500&busca=" +
+        encodeURIComponent(busca) + "&" + new URLSearchParams(ordemTecnicos)
+      );
+
+      const tabela = document.getElementById("tabelaTecnicos");
+      tabela.replaceChildren();
+
+      dados.forEach(tecnico => {
+        const tr = document.createElement("tr");
+
+        [
+          tecnico.tecnico,
+          tecnico.total_os,
+          tecnico.os_avaliadas,
+          percentual(tecnico.cobertura_percentual),
+          tecnico.score_medio === null
+            ? "Sem avaliações"
+            : percentual(tecnico.score_medio),
+          tecnico.taxa_encerramento == null ? "—" : percentual(tecnico.taxa_encerramento)
+        ].forEach((valor, indice) => {
+          const td = document.createElement("td");
+          if (indice === 0) {
+            const botao = document.createElement("button");
+            botao.type = "button";
+            botao.className = "nome-tecnico";
+            botao.textContent = valor;
+            botao.setAttribute("aria-haspopup", "dialog");
+            botao.addEventListener("click", () => abrirCriteriosTecnico(tecnico));
+            td.append(botao);
+          } else td.textContent = valor;
+          tr.append(td);
+        });
+
+        tabela.append(tr);
+      });
+
+      document.getElementById("resumoTecnicos").textContent =
+        `${dados.length} técnicos apresentados.`;
+
+    } catch (erro) {
+      document.getElementById("resumoTecnicos").textContent =
+        "Erro ao consultar técnicos: " + erro.message;
+    }
+  }
+
+  document.getElementById("btnBuscaTecnico")
+    .addEventListener("click", carregarTecnicos);
+
+  document.getElementById("buscaTecnico")
+    .addEventListener("keydown", evento => {
+      if (evento.key === "Enter") carregarTecnicos();
+    });
+
+  function habilitarOrdenacao(tbodyId, campos, estado, carregar) {
+    const ths = document.getElementById(tbodyId).closest("table").querySelectorAll("th");
+    function atualizar() {
+      ths.forEach((th, i) => {
+        const ativo = estado.ordenar === campos[i];
+        th.setAttribute("aria-sort", ativo ? (estado.direcao === "asc" ? "ascending" : "descending") : "none");
+        th.querySelector("span").textContent = ativo ? (estado.direcao === "asc" ? " ↑" : " ↓") : " ↕";
+      });
+    }
+    ths.forEach((th, i) => {
+      const botao = document.createElement("button");
+      botao.className = "ordenar-coluna";
+      botao.type = "button";
+      botao.textContent = th.textContent;
+      botao.title = "Clique para alternar a ordem crescente ou decrescente";
+      botao.append(document.createElement("span"));
+      th.replaceChildren(botao);
+      botao.addEventListener("click", () => {
+        estado.direcao = estado.ordenar === campos[i] && estado.direcao === "asc" ? "desc" : "asc";
+        estado.ordenar = campos[i];
+        atualizar(); carregar();
+      });
+    });
+    atualizar();
+  }
+  habilitarOrdenacao("tabelaPeriodo", ["data_os", "ordem_servico", "descricao", "score_0_100", "tecnicos", "termino", "usuario_inicio"], ordemPeriodo, () => { paginaAtual = 1; carregarPeriodo(); });
+  habilitarOrdenacao("tabelaTecnicos", ["tecnico", "total_os", "os_avaliadas", "cobertura_percentual", "score_medio", "taxa_encerramento"], ordemTecnicos, carregarTecnicos);
+
+  const explicacao = antigasRubricas.querySelectorAll(":scope > .card")[1];
+  const dialog = document.createElement("dialog");
+  dialog.className = "ajuda-dialog";
+  dialog.setAttribute("aria-label", "Como funciona a avaliação");
+  const fecharAjuda = document.createElement("button");
+  fecharAjuda.textContent = "Fechar ×";
+  fecharAjuda.className = "fechar-ajuda";
+  fecharAjuda.addEventListener("click", () => dialog.close());
+  dialog.append(fecharAjuda);
+  const ranking = document.createElement("div");
+  ranking.className = "card";
+  ranking.innerHTML = `<h2>Score documental por técnico</h2><p class="muted ranking-nota">Somente t&#233;cnicos com pelo menos 11 OS com score v&#225;lido no per&#237;odo. OS coletivas podem participar de mais de um t&#233;cnico.</p><div class="ranking-grid"><section><h3>5 menores notas</h3><div id="ranking-baixo">Carregando…</div></section><section><h3>5 maiores notas</h3><div id="ranking-alto">Carregando…</div></section></div>`;
+  explicacao.replaceWith(ranking);
+  dialog.append(explicacao);
+  document.body.append(dialog);
+  const info = document.createElement("button");
+  info.className = "info-botao";
+  info.textContent = "i";
+  info.title = "Como funciona a avaliação";
+  info.setAttribute("aria-label", info.title);
+  info.addEventListener("click", () => dialog.showModal());
+  antigoTitulo.append(info);
+  dialog.addEventListener("click", e => { if (e.target === dialog) { const r = dialog.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dialog.close(); } });
+
+  async function carregarRanking() {
+    await Promise.all([["baixo", "asc"], ["alto", "desc"]].map(async ([grupo, direcao]) => {
+      const alvo = document.getElementById("ranking-" + grupo);
+      try {
+        const dados = await obterJSON(`/api/tecnicos-indicadores?limite=5&ordenar=score_medio&direcao=${direcao}&somente_score=true&minimo_os_score=11&${parametrosGeral()}`);
+        alvo.replaceChildren();
+        if (!dados.length) alvo.textContent = "Sem scores válidos.";
+        dados.forEach(t => {
+          const item = document.createElement("div"); item.className = "ranking-item " + grupo;
+          const linha = document.createElement("div"); linha.className = "metric-head";
+          const nome = document.createElement("span"); nome.textContent = t.tecnico;
+          const nota = document.createElement("strong"); nota.textContent = percentual(t.score_medio);
+          linha.append(nome, nota);
+          const barra = document.createElement("div"); barra.className = "bar";
+          const fill = document.createElement("div"); fill.className = "bar-fill"; fill.style.width = Math.max(0, Math.min(100, t.score_medio)) + "%";
+          barra.append(fill);
+          const detalhe = document.createElement("small"); detalhe.className = "muted"; detalhe.textContent = numero(t.os_com_score) + " OS com score";
+          item.append(linha, barra, detalhe); alvo.append(item);
+        });
+      } catch (e) { alvo.textContent = "Erro ao carregar: " + e.message; }
+    }));
+  }
+  window.addEventListener("periodo-geral", carregarRanking);
+  carregarRanking();
+  document.getElementById("atualizar").addEventListener("click", carregarRanking);
+  let resizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { if (paineis.evolucao.classList.contains("ativa")) carregarEvolucao(); }, 200);
+  });
+
+  // Aba padrão.
+  ativarAba("geral");
+
+})();
+</script>
+
+<script>
+(async () => {
+  "use strict";
+  const url = "/api/publicacao";
+  // A rota existe somente no backend principal. O viewer nao cria esta secao.
+  let inicial;
+  try {
+    const resposta = await fetch(url + "/status", { cache: "no-store" });
+    if (!resposta.ok) return;
+    inicial = await resposta.json();
+    if (!("ultima_publicacao" in inicial)) return;
+  } catch (_) { return; }
+
+  const painel = document.createElement("section");
+  painel.className = "card";
+  painel.id = "painel-publicacao";
+  painel.innerHTML = `
+    <h2>Publica&#231;&#227;o de dados</h2>
+    <p class="muted">Disponibilize as avalia&#231;&#245;es mais recentes para consulta dos demais funcion&#225;rios.</p>
+    <p id="pub-ultima">Consultando &#250;ltima publica&#231;&#227;o...</p>
+    <p id="pub-quantidade" class="muted"></p>
+    <button type="button" id="btn-publicar">Publicar dados</button>
+    <span id="pub-andamento" hidden role="status"> &#8987; Publicando dados...</span>
+    <p id="pub-mensagem" role="status" aria-live="polite"></p>
+    <div id="pub-detalhes" class="muted" style="overflow-wrap:anywhere"></div>
+    <p id="pub-aviso" class="error" role="status"></p>`;
+  document.getElementById("aba-classificar").append(painel);
+  const botao = document.getElementById("btn-publicar");
+  const mensagem = document.getElementById("pub-mensagem");
+  let timer, consultando = false, solicitando = false, executando = false;
+  function dataHora(valor) {
+    const data = new Date(valor);
+    return Number.isNaN(data.getTime()) ? "Data indisponivel" :
+      data.toLocaleDateString("pt-BR") + " \u00e0s " + data.toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"});
+  }
+  function renderizar(dados) {
+    executando = dados.situacao === "publicando";
+    botao.disabled = executando || solicitando;
+    painel.setAttribute("aria-busy", String(executando));
+    document.getElementById("pub-andamento").hidden = !executando;
+    mensagem.textContent = dados.mensagem || "";
+    mensagem.className = dados.situacao === "erro" ? "error" : "";
+    const ultima = dados.ultima_publicacao;
+    document.getElementById("pub-ultima").textContent = "\u00daltima publica\u00e7\u00e3o: " +
+      (ultima ? dataHora(ultima.publicado_em) : dados.aviso_manifesto ? "consulta indispon\u00edvel" : "nenhuma publica\u00e7\u00e3o encontrada");
+    document.getElementById("pub-quantidade").textContent = ultima ?
+      Number(ultima.total_avaliacoes).toLocaleString("pt-BR") + " avalia\u00e7\u00f5es publicadas" : "";
+    document.getElementById("pub-aviso").textContent = dados.aviso_manifesto || "";
+    const detalhes = document.getElementById("pub-detalhes");
+    detalhes.replaceChildren();
+    if (dados.resultado) {
+      const r = dados.resultado;
+      [dataHora(r.publicado_em), Number(r.total_avaliacoes).toLocaleString("pt-BR") + " avalia\u00e7\u00f5es", "Arquivo: " + r.arquivo].forEach(texto => {
+        const linha = document.createElement("p"); linha.textContent = texto; detalhes.append(linha);
+      });
+    }
+  }
+  function agendar() {
+    clearTimeout(timer);
+    timer = setTimeout(consultar, executando ? 2000 : 30000);
+  }
+  async function consultar() {
+    if (consultando || solicitando) { agendar(); return; }
+    consultando = true;
+    try {
+      const resposta = await fetch(url + "/status", { cache: "no-store" });
+      if (!resposta.ok) throw new Error("HTTP " + resposta.status);
+      renderizar(await resposta.json());
+    } catch (erro) {
+      document.getElementById("pub-aviso").textContent = "Falha ao consultar o estado da publica\u00e7\u00e3o: " + erro.message;
+    } finally { consultando = false; agendar(); }
+  }
+  botao.addEventListener("click", async () => {
+    if (botao.disabled) return;
+    solicitando = true; botao.disabled = true;
+    mensagem.textContent = "Solicitando publica\u00e7\u00e3o...";
+    try {
+      const resposta = await fetch(url + "/iniciar", { method: "POST" });
+      const dados = await resposta.json();
+      if (!resposta.ok) throw new Error(dados.detail || "HTTP " + resposta.status);
+      executando = true;
+      mensagem.textContent = dados.mensagem;
+      document.getElementById("pub-andamento").hidden = false;
+    } catch (erro) {
+      mensagem.textContent = "N\u00e3o foi poss\u00edvel iniciar: " + erro.message;
+      mensagem.className = "error";
+    } finally {
+      solicitando = false;
+      botao.disabled = executando;
+      agendar();
+    }
+  });
+  renderizar(inicial); agendar();
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) consultar(); });
+})();
+</script>
+
+<script>
+(async () => {
+  const url = "/api/importacao";
+  let inicial;
+  try {
+    const r = await fetch(url + "/status", {cache:"no-store"});
+    if (!r.ok) return;
+    inicial = await r.json();
+    if (!("situacao" in inicial)) return;
+  } catch (_) { return; }
+  const painel = document.createElement("section");
+  painel.className = "card";
+  painel.innerHTML = `<h2>Atualização dos dados</h2>
+    <p class="muted">Após substituir data/incoming/DADOS_EXPORTADOS.csv, importe o arquivo para atualizar as ordens no painel. A publicação na rede continua sendo uma etapa separada.</p>
+    <button type="button" id="btn-importar">Importar CSV</button>
+    <p id="imp-mensagem" role="status" aria-live="polite"></p>
+    <p id="imp-resultado" class="muted"></p>`;
+  document.getElementById("aba-classificar").append(painel);
+  const botao = document.getElementById("btn-importar");
+  const mensagem = document.getElementById("imp-mensagem");
+  let timer, solicitando = false, anterior = "ocioso";
+  function renderizar(d) {
+    const ativo = d.situacao === "importando";
+    botao.disabled = ativo || solicitando;
+    botao.textContent = ativo ? "Importando..." : "Importar CSV";
+    painel.setAttribute("aria-busy",String(ativo));
+    mensagem.textContent = d.mensagem;
+    mensagem.className = d.situacao === "erro" ? "error" : "";
+    document.getElementById("imp-resultado").textContent = d.resultado ?
+      `Novas: ${d.resultado.novas} | Alteradas: ${d.resultado.alteradas} | Inalteradas: ${d.resultado.inalteradas}` : "";
+    if (d.situacao === "concluido" && anterior !== "concluido") {
+      // As novas opcoes serao consultadas ao retornar ao grafico.
+      window.dispatchEvent(new Event("dados-importados"));
+      carregarResumo().catch(console.error);
+    }
+    anterior = d.situacao;
+    clearTimeout(timer);
+    timer = setTimeout(consultar, ativo ? 1000 : 10000);
+  }
+  async function consultar() {
+    try { renderizar(await obterJSON(url + "/status")); }
+    catch(e) {
+      mensagem.textContent = "Falha ao consultar a importação: " + e.message;
+      timer = setTimeout(consultar,3000);
+    }
+  }
+  botao.addEventListener("click",async () => {
+    if (botao.disabled) return;
+    solicitando = true; botao.disabled = true; clearTimeout(timer);
+    try {
+      const r = await fetch(url + "/iniciar",{method:"POST"});
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.detail || "Falha ao iniciar importação");
+      solicitando = false; renderizar(d);
+    } catch(e) {
+      mensagem.textContent = e.message;
+      solicitando = false;
+      timer = setTimeout(consultar,1000);
+    }
+  });
+  renderizar(inicial);
+})();
+</script>
+
+</body>
+</html>

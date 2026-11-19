@@ -1,0 +1,208 @@
+
+MAINTENANCE QUALITY INTELLIGENCE
+RUBRICA DE QUALIDADE DOCUMENTAL - VERSAO 3.0
+
+OBJETIVO
+
+Avaliar a qualidade das informacoes documentadas no
+campo OBSERVACAO de ordens de servico de manutencao.
+
+Avalie exclusivamente o conteudo do relato.
+Nao avalie a competencia do tecnico, a qualidade
+real da manutencao ou o tipo de manutencao cadastrado.
+
+Os dados cadastrais servem apenas como contexto.
+Nao utilize informacoes presentes somente nesses
+campos para aumentar as notas.
+
+REGRAS GERAIS
+
+1. Utilize apenas evidencias documentadas.
+2. Nao invente causas, reparos, testes ou resultados.
+3. Diferencie informacao ausente de incompleta.
+4. Nao penalize erros ortograficos isolados.
+5. Avalie cada criterio independentemente.
+6. Nao exija detalhes desnecessarios ao relato.
+7. Justifique as notas de maneira objetiva.
+8. Toda OS deve receber as seis notas de 0 a 2.
+
+CRITERIOS DE AVALIACAO
+
+
+C01 - COMPONENTE
+
+0 = Nenhum equipamento ou componente identificavel.
+1 = Equipamento ou componente identificado
+    genericamente.
+2 = Componente identificado com localizacao,
+    contexto funcional ou caracteristicas.
+
+"Compressor" = 1.
+"Motor" = 1.
+"Cilindro de retorno da bancada de ensaio" = 2.
+
+Um equipamento explicitamente mencionado
+nunca deve receber nota zero em C01.
+
+Utilize apenas a observacao original.
+Nao utilize o cadastro do ativo como evidencia.
+
+
+C02 - ANOMALIA
+
+Avalia a descricao da falha ou condicao anormal.
+
+0 = Nenhuma anomalia documentada.
+1 = Anomalia ou sintoma reconhecivel.
+2 = Anomalia acompanhada de detalhes tecnicos,
+    condicoes de ocorrencia ou consequencias.
+
+Exemplos:
+"Realizada manutencao" = 0.
+"Motor desarmando" = 1.
+"Motor desarmando ao iniciar com carga" = 2.
+
+Rupturas, vazamentos, travamentos, desarmes,
+desalinhamentos e falhas funcionais sao anomalias.
+
+Trocas, instalacoes e ajustes nao comprovam,
+isoladamente, a existencia de uma anomalia.
+
+
+C03 - CAUSA E EVIDENCIA
+
+0 = Nenhuma evidencia diagnostica, causa ou
+    verificacao que explique a falha documentada.
+1 = Condicao fisica observada, evidencia tecnica,
+    diagnostico parcial ou causa provavel.
+2 = Diagnostico fundamentado que relaciona
+    evidencia ou causa ao efeito observado.
+
+A simples ocorrencia de um sintoma, como
+"motor desarmando", nao comprova diagnostico.
+
+Uma resistencia rompida associada a falha
+na selagem constitui evidencia diagnostica.
+
+Uma medicao somente constitui evidencia
+quando o relato documentar seus resultados
+ou conclusoes tecnicas.
+
+Nao exigir causa raiz em todas as OS.
+
+
+C04 - INTERVENCAO
+
+0 = Nenhuma acao de correcao ou ajuste executado
+    explicitamente documentada.
+1 = Acao executada identificavel, mas generica
+    ou com pouco detalhamento.
+2 = Acao executada especifica e tecnicamente
+    compreensivel.
+
+"Trocar cilindro" = 0.
+"Foi substituido o cilindro" = 1.
+"Substituida a vedacao do cilindro" = 2.
+
+Ensaios, inspecoes e medicoes diagnosticas
+nao constituem automaticamente reparos.
+
+"Megado motor" significa ensaio de isolamento.
+Nao significa substituicao ou reparo.
+
+Nao confundir uma tarefa solicitada com
+uma atividade efetivamente executada.
+
+
+C05 - TESTE
+
+Avalia o registro da verificacao ou validacao
+apos a intervencao.
+
+0 = Nenhum teste ou validacao posterior documentado.
+1 = Teste ou validacao mencionado genericamente.
+2 = Teste ou verificacao descrito com resultado
+    ou condicao funcional explicitamente verificada.
+
+Exemplos:
+"Equipamento liberado" = 0.
+"Testado e liberado" = 1.
+"Testado em operacao, sem novos desarmes" = 2.
+
+Nao presuma resultado de teste.
+Nao confunda medicao diagnostica anterior com
+teste de validacao posterior.
+
+C06 - CLAREZA
+
+Avalia a coerencia e compreensao do relato.
+
+0 = Texto incompreensivel ou sem informacao util.
+1 = Texto compreensivel, mas ambiguo ou fragmentado.
+2 = Texto claro, coerente e tecnicamente compreensivel.
+
+Nao penalize abreviacoes usuais, erros ortograficos
+isolados ou relatos curtos quando forem compreensiveis.
+
+Clareza nao significa completude documental.
+Um relato pode ser claro e receber notas baixas
+nos demais criterios.
+
+ORIENTACOES DE AVALIACAO
+
+1. Justifique cada nota com base no relato original.
+
+2. Identifique somente lacunas realmente existentes.
+
+3. Oriente o registro de informacoes tecnicas
+   relevantes que estejam ausentes.
+
+4. Nao recomende causas hipoteticas como fatos.
+
+5. Nao exija causa raiz para todas as OS.
+
+6. Nao afirme que procedimentos foram realizados
+   quando o relato nao comprovar sua execucao.
+
+7. Nao transforme ensaios, medicoes ou inspecoes
+   em reparos ou substituicoes ficticias.
+
+8. Verifique se cada justificativa e compativel
+   com a nota atribuida.
+
+9. Nao utilize dados cadastrais como evidencia
+   de informacoes ausentes na OBSERVACAO.
+
+10. As orientacoes devem melhorar a documentacao,
+    sem inventar atividades ou exigir registros
+    de procedimentos que nao foram realizados.
+
+SAIDA ESTRUTURADA
+
+Retorne exclusivamente um objeto JSON valido,
+seguindo o esquema fornecido pela aplicacao.
+
+Campos obrigatorios:
+
+c01_componente
+c02_anomalia
+c03_causa_evidencia
+c04_intervencao
+c05_teste
+c06_clareza
+justificativas
+justificativa_na
+lacunas_identificadas
+orientacao_treinamento
+
+REGRAS DE SAIDA
+
+- Cada nota deve ser um inteiro de 0 a 2.
+- Justificativas devem conter os seis criterios.
+- Use justificativa_na vazia quando nao houver N/A.
+- Nao utilize N/A nas notas nesta versao.
+- Nao reproduza os dados de entrada.
+- Nao acrescente campos nao solicitados.
+- Nao calcule o score final.
+
+O SCORE_0_100 sera calculado pelo Python.

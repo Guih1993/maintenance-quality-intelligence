@@ -1,0 +1,55 @@
+FILIAL;ORDEM_SERVICO;OS_OBSERVACAO;C01_COMPONENTE;C02_ANOMALIA;C03_CAUSA_EVIDENCIA;C04_INTERVENCAO;C05_TESTE;C06_CLAREZA
+DEMO;DEMO-001;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-002;Motor vibrando. Ajustada a fixação.;1;1;0;1;0;2
+DEMO;DEMO-003;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-004;Bomba do circuito de retorno perdeu vazão. Encontrados resíduos na tela do filtro. Tela limpa e vazão restabelecida no teste.;2;1;2;2;2;2
+DEMO;DEMO-005;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-006;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-007;Bomba do circuito de retorno perdeu vazão. Encontrados resíduos na tela do filtro. Tela limpa e vazão restabelecida no teste.;2;1;2;2;2;2
+DEMO;DEMO-008;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-009;Motor vibrando. Ajustada a fixação.;1;1;0;1;0;2
+DEMO;DEMO-010;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-011;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-012;Motor vibrando. Ajustada a fixação.;1;1;0;1;0;2
+DEMO;DEMO-013;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-014;Bomba do circuito de retorno perdeu vazão. Encontrados resíduos na tela do filtro. Tela limpa e vazão restabelecida no teste.;2;1;2;2;2;2
+DEMO;DEMO-015;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-016;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-017;Bomba do circuito de retorno perdeu vazão. Encontrados resíduos na tela do filtro. Tela limpa e vazão restabelecida no teste.;2;1;2;2;2;2
+DEMO;DEMO-018;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-019;Motor vibrando. Ajustada a fixação.;1;1;0;1;0;2
+DEMO;DEMO-020;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-021;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-022;Motor vibrando. Ajustada a fixação.;1;1;0;1;0;2
+DEMO;DEMO-023;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-024;Bomba do circuito de retorno perdeu vazão. Encontrados resíduos na tela do filtro. Tela limpa e vazão restabelecida no teste.;2;1;2;2;2;2
+DEMO;DEMO-025;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-026;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-027;Bomba do circuito de retorno perdeu vazão. Encontrados resíduos na tela do filtro. Tela limpa e vazão restabelecida no teste.;2;1;2;2;2;2
+DEMO;DEMO-028;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-029;Motor vibrando. Ajustada a fixação.;1;1;0;1;0;2
+DEMO;DEMO-030;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-031;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-032;Motor vibrando. Ajustada a fixação.;1;1;0;1;0;2
+DEMO;DEMO-033;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-034;Bomba do circuito de retorno perdeu vazão. Encontrados resíduos na tela do filtro. Tela limpa e vazão restabelecida no teste.;2;1;2;2;2;2
+DEMO;DEMO-035;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-036;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-037;Bomba do circuito de retorno perdeu vazão. Encontrados resíduos na tela do filtro. Tela limpa e vazão restabelecida no teste.;2;1;2;2;2;2
+DEMO;DEMO-038;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-039;Motor vibrando. Ajustada a fixação.;1;1;0;1;0;2
+DEMO;DEMO-040;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-041;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-042;Motor vibrando. Ajustada a fixação.;1;1;0;1;0;2
+DEMO;DEMO-043;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-044;Bomba do circuito de retorno perdeu vazão. Encontrados resíduos na tela do filtro. Tela limpa e vazão restabelecida no teste.;2;1;2;2;2;2
+DEMO;DEMO-045;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-046;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-047;Bomba do circuito de retorno perdeu vazão. Encontrados resíduos na tela do filtro. Tela limpa e vazão restabelecida no teste.;2;1;2;2;2;2
+DEMO;DEMO-048;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-049;Motor vibrando. Ajustada a fixação.;1;1;0;1;0;2
+DEMO;DEMO-050;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-051;A pressão na saída da bancada caiu durante o ciclo. A inspeção revelou fuga na junta. Substituída a junta. Em cinco ciclos a pressão permaneceu estável.;2;2;2;2;2;2
+DEMO;DEMO-052;Motor vibrando. Ajustada a fixação.;1;1;0;1;0;2
+DEMO;DEMO-053;Revisado.;0;0;0;0;0;1
+DEMO;DEMO-054;Bomba do circuito de retorno perdeu vazão. Encontrados resíduos na tela do filtro. Tela limpa e vazão restabelecida no teste.;2;1;2;2;2;2
